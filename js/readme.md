@@ -1,0 +1,1 @@
+Partially cloned and migrated from https://github.com/davidmchapman/3DContainerPacking
