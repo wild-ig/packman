@@ -6,18 +6,16 @@ Copyright (c) 2019 davidmchapman
 Modified and converted to JavaScript
 Copyright (c) 2020 wild-ig
 */ 
-//	}
-//}
+
 /// <summary>
 /// Attempts to pack the specified containers with the specified items using the specified algorithms.
 /// </summary>
 /// <param name="containers">The list of containers to pack.</param>
-/// <param name="itemsToPack">The items to pack.</param>
+/// <param name="packingList">The items to pack.</param>
 /// <param name="algorithmTypeIDs">The list of algorithm type IDs to use for packing.</param>
 /// <returns>A container packing result with lists of the packed and unpacked items.</returns>
-function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ containers, /*List<Item>*/ packingList, /*List<int>*/ algorithmTypeIDs)
+function Pack(containers, packingList, algorithmTypeIDs)
 {
-
 	class ScrapPad
 	{
 		/// <summary>
@@ -26,7 +24,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The x coordinate of the gap's right corner.
 		/// </value>
-		/*public decimal*/ CumX = 0;
+		CumX = 0;
 
 		/// <summary>
 		/// Gets or sets the z coordinate of the gap's right corner.
@@ -34,7 +32,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The z coordinate of the gap's right corner.
 		/// </value>
-		/*public decimal*/ CumZ = 0;
+		CumZ = 0;
 
 		/// <summary>
 		/// Gets or sets the following entry.
@@ -42,7 +40,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The following entry.
 		/// </value>
-		/*public ScrapPad*/ Post = null;
+		Post = null;
 
 		/// <summary>
 		/// Gets or sets the previous entry.
@@ -50,7 +48,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The previous entry.
 		/// </value>
-		/*public ScrapPad*/ Pre = null;
+		Pre = null;
 	}
 
 	/// <summary>
@@ -59,7 +57,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// <param name="container">The container to pack items into.</param>
 	/// <param name="items">The items to pack.</param>
 	/// <returns>The bin packing result.</returns>
-	function Run(/*Container*/ container, /*List<Item>*/ items)
+	function Run(container, items)
 	{
 		Initialize(container, items);
 		ExecuteIterations(container);
@@ -96,67 +94,67 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		return result;
 	}
 
-	let /*List<Item>*/ itemsToPack = [];
-	let /*List<Item>*/ itemsPackedInOrder = [];
-	let /*List<Layer>*/ layers = [];
-	let /*ContainerPackingResult*/ = [];
+	let itemsToPack = [];
+	let itemsPackedInOrder = [];
+	let layers = [];
+	let = [];
 
-	let /*ScrapPad*/ scrapfirst = new ScrapPad();
-	let /*ScrapPad*/ smallestZ = new ScrapPad();
-	let /*ScrapPad*/ trash = new ScrapPad();
+	let scrapfirst = new ScrapPad();
+	let smallestZ = new ScrapPad();
+	let trash = new ScrapPad();
 
-	let /*bool*/ evened = false;
-	let /*bool*/ hundredPercentPacked = false;
-	let /*bool*/ layerDone = false;
-	let /*bool*/ packing = false;
-	let /*bool*/ packingBest = false;
-	let /*bool*/ quit = false;
+	let evened = false;
+	let hundredPercentPacked = false;
+	let layerDone = false;
+	let packing = false;
+	let packingBest = false;
+	let quit = false;
 
-	let /*int*/ bboxi = 0;
-	let /*int*/ bestIteration = 0;
-	let /*int*/ bestVariant = 0;
-	let /*int*/ boxi = 0;
-	let /*int*/ cboxi = 0;
-	let /*int*/ layerListLen = 0;
-	let /*int*/ packedItemCount = 0;
-	let /*int*/ x = 0;
+	let bboxi = 0;
+	let bestIteration = 0;
+	let bestVariant = 0;
+	let boxi = 0;
+	let cboxi = 0;
+	let layerListLen = 0;
+	let packedItemCount = 0;
+	let x = 0;
 
-	let /*decimal*/ bbfx = 0;
-	let /*decimal*/ bbfy = 0;
-	let /*decimal*/ bbfz = 0;
-	let /*decimal*/ bboxx = 0;
-	let /*decimal*/ bboxy = 0;
-	let /*decimal*/ bboxz = 0;
-	let /*decimal*/ bfx = 0;
-	let /*decimal*/ bfy = 0;
-	let /*decimal*/ bfz = 0;
-	let /*decimal*/ boxx = 0;
-	let /*decimal*/ boxy = 0;
-	let /*decimal*/ boxz = 0;
-	let /*decimal*/ cboxx = 0;
-	let /*decimal*/ cboxy = 0;
-	let /*decimal*/ cboxz = 0;
-	let /*decimal*/ layerinlayer = 0;
-	let /*decimal*/ layerThickness = 0;
-	let /*decimal*/ lilz = 0;
-	let /*decimal*/ packedVolume = 0;
-	let /*decimal*/ packedy = 0;
-	let /*decimal*/ prelayer = 0;
-	let /*decimal*/ prepackedy = 0;
-	let /*decimal*/ preremainpy = 0;
-	let /*decimal*/ px = 0;
-	let /*decimal*/ py = 0;
-	let /*decimal*/ pz = 0;
-	let /*decimal*/ remainpy = 0;
-	let /*decimal*/ remainpz = 0;
-	let /*decimal*/ itemsToPackCount = 0;
-	let /*decimal*/ totalItemVolume = 0;
-	let /*decimal*/ totalContainerVolume = 0;
+	let bbfx = 0;
+	let bbfy = 0;
+	let bbfz = 0;
+	let bboxx = 0;
+	let bboxy = 0;
+	let bboxz = 0;
+	let bfx = 0;
+	let bfy = 0;
+	let bfz = 0;
+	let boxx = 0;
+	let boxy = 0;
+	let boxz = 0;
+	let cboxx = 0;
+	let cboxy = 0;
+	let cboxz = 0;
+	let layerinlayer = 0;
+	let layerThickness = 0;
+	let lilz = 0;
+	let packedVolume = 0;
+	let packedy = 0;
+	let prelayer = 0;
+	let prepackedy = 0;
+	let preremainpy = 0;
+	let px = 0;
+	let py = 0;
+	let pz = 0;
+	let remainpy = 0;
+	let remainpz = 0;
+	let itemsToPackCount = 0;
+	let totalItemVolume = 0;
+	let totalContainerVolume = 0;
 
 	/// <summary>
 	/// Analyzes each unpacked box to find the best fitting one to the empty space given.
 	/// </summary>
-	function AnalyzeBox(/*decimal*/ hmx, /*decimal*/ hy, /*decimal*/ hmy, /*decimal*/ hz, /*decimal*/ hmz, /*decimal*/ dim1, /*decimal*/ dim2, /*decimal*/ dim3)
+	function AnalyzeBox(hmx, hy, hmy, hz, hmz, dim1, dim2, dim3)
 	{
 		if (dim1 <= hmx && dim2 <= hmy && dim3 <= hmz)
 		{
@@ -232,7 +230,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// <summary>
 	/// After finding each box, the candidate boxes and the condition of the layer are examined.
 	/// </summary>
-	function /*void*/ CheckFound()
+	function CheckFound()
 	{
 		evened = false;
 
@@ -318,11 +316,11 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// <summary>
 	/// Executes the packing algorithm variants.
 	/// </summary>
-	function /*void*/ ExecuteIterations(/*Container*/ container)
+	function ExecuteIterations(container)
 	{
-		let /*int*/ itelayer = 0;
-		let /*int*/ layersIndex = 0;
-		let /*decimal*/ bestVolume = 0.0;
+		let itelayer = 0;
+		let layersIndex = 0;
+		let bestVolume = 0.0;
 
 		for (let containerOrientationVariant = 1; (containerOrientationVariant <= 6) && !quit; containerOrientationVariant++)
 		{
@@ -417,7 +415,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 
 			if ((container.Length == container.Height) && (container.Height == container.Width)) containerOrientationVariant = 6;
 
-			layers = []; /*new List<Layer>();*/
+			layers = [];
 		}
 	}
 
@@ -425,9 +423,9 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// Finds the most proper boxes by looking at all six possible orientations,
 	/// empty space given, adjacent boxes, and pallet limits.
 	/// </summary>
-	function /*void*/ FindBox(/*decimal*/ hmx, /*decimal*/ hy, /*decimal*/ hmy, /*decimal*/ hz, /*decimal*/ hmz)
+	function FindBox(hmx, hy, hmy, hz, hmz)
 	{
-		let /*int*/ y = 0;
+		let y = 0;
 		bfx = 32767;
 		bfy = 32767;
 		bfz = 32767;
@@ -463,16 +461,16 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// <summary>
 	/// Finds the most proper layer height by looking at the unpacked boxes and the remaining empty space available.
 	/// </summary>
-	function /*void*/ FindLayer(/*decimal*/ thickness)
+	function FindLayer(thickness)
 	{
-		let /*decimal*/ exdim = 0;
-		let /*decimal*/ dimdif;
-		let /*decimal*/ dimen2 = 0;
-		let /*decimal*/ dimen3 = 0;
-		let /*int*/ y = 0;
-		let /*int*/ z = 0;
-		let /*decimal*/ layereval = 0;
-		let /*decimal*/ eval = 0;
+		let exdim = 0;
+		let dimdif;
+		let dimen2 = 0;
+		let dimen3 = 0;
+		let y = 0;
+		let z = 0;
+		let layereval = 0;
+		let eval = 0;
 		layerThickness = 0;
 		eval = 1000000;
 
@@ -542,9 +540,9 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// <summary>
 	/// Finds the first to be packed gap in the layer edge.
 	/// </summary>
-	function /*void*/ FindSmallestZ()
+	function FindSmallestZ()
 	{
-		let /*ScrapPad*/ scrapmemb = scrapfirst;
+		let scrapmemb = scrapfirst;
 		smallestZ = scrapmemb;
 
 		while (scrapmemb.Post != null)
@@ -561,16 +559,16 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// <summary>
 	/// Initializes everything.
 	/// </summary>
-	function /*void*/ Initialize(/*Container*/ container, /*List<Item>*/ items)
+	function Initialize(container, items)
 	{
-		itemsToPack = []; /*new List<Item>();*/
-		itemsPackedInOrder = []; /*new List<Item>();*/
+		itemsToPack = [];
+		itemsPackedInOrder = [];
 
 		// The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
 		// of the list to make that possible.
 		itemsToPack.push(new Item(0, 0, 0, 0, 0));
 
-		layers = []; /*new List<Layer>();*/
+		layers = [];
 		itemsToPackCount = 0;
 
 		for (let j = 0; j < items.length; j++)
@@ -578,7 +576,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 			let item = items[j];
 			for (let i = 1; i <= item.Quantity; i++)
 			{
-				let /*Item*/ newItem = new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
+				let newItem = new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
 				itemsToPack.push(newItem);
 			}
 
@@ -607,17 +605,17 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// <summary>
 	/// Lists all possible layer heights by giving a weight value to each of them.
 	/// </summary>
-	function /*void*/ ListCanditLayers()
+	function ListCanditLayers()
 	{
-		let /*bool*/ same = false;
-		let /*decimal*/ exdim = 0;
-		let /*decimal*/ dimdif;
-		let /*decimal*/ dimen2 = 0;
-		let /*decimal*/ dimen3 = 0;
-		let /*int*/ y;
-		let /*int*/ z;
-		let /*int*/ k;
-		let /*decimal*/ layereval;
+		let same = false;
+		let exdim = 0;
+		let dimdif;
+		let dimen2 = 0;
+		let dimen3 = 0;
+		let y;
+		let z;
+		let k;
+		let layereval;
 
 		layerListLen = 0;
 
@@ -694,14 +692,14 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// Transforms the found coordinate system to the one entered by the user and writes them
 	/// to the report file.
 	/// </summary>
-	function /*void*/ OutputBoxList()
+	function OutputBoxList()
 	{
-			let /*decimal*/ packCoordX = 0;
-			let /*decimal*/ packCoordY = 0;
-			let /*decimal*/ packCoordZ = 0;
-			let /*decimal*/ packDimX = 0;
-			let /*decimal*/ packDimY = 0;
-			let /*decimal*/ packDimZ = 0;
+			let packCoordX = 0;
+			let packCoordY = 0;
+			let packCoordZ = 0;
+			let packDimX = 0;
+			let packDimY = 0;
+			let packDimZ = 0;
 
 		switch (bestVariant)
 		{
@@ -773,11 +771,11 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// <summary>
 	/// Packs the boxes found and arranges all variables and records properly.
 	/// </summary>
-	function /*void*/ PackLayer()
+	function PackLayer()
 	{
-			let /*decimal*/ lenx;
-			let /*decimal*/ lenz;
-			let /*decimal*/ lpz;
+			let lenx;
+			let lenz;
+			let lpz;
 
 		if (layerThickness == 0)
 		{
@@ -1071,7 +1069,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// Using the parameters found, packs the best solution found and
 	/// reports to the console.
 	/// </summary>
-	function /*void*/ Report(/*Container*/ container)
+	function Report(container)
 	{
 		quit = false;
 
@@ -1158,7 +1156,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// <summary>
 	/// After packing of each item, the 100% packing condition is checked.
 	/// </summary>
-	function /*void*/ VolumeCheck()
+	function VolumeCheck()
 	{
 		itemsToPack[cboxi].IsPacked = true;
 		itemsToPack[cboxi].PackDimX = cboxx;
@@ -1195,7 +1193,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The layer dimension value.
 		/// </value>
-		/*public decimal*/ LayerDim = 0;
+		LayerDim = 0;
 
 		/// <summary>
 		/// Gets or sets the layer eval value, representing an evaluation weight
@@ -1204,7 +1202,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The layer eval value.
 		/// </value>
-		/*public decimal*/ LayerEval = -1;
+		LayerEval = -1;
 		
 		constructor(dim, ev) {
 			this.LayerDim = dim;
@@ -1217,9 +1215,6 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 	/// </summary>
 	class Container
 	{
-		/*private decimal*/ Volume = 0;
-
-
 		/// <summary>
 		/// Initializes a new instance of the Container class.
 		/// </summary>
@@ -1227,7 +1222,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <param name="length">The container length.</param>
 		/// <param name="width">The container width.</param>
 		/// <param name="height">The container height.</param>
-		constructor(/*int*/ id, /*decimal*/ length, /*decimal*/ width, /*decimal*/ height)
+		constructor(id, length, width, height)
 		{
 			this.ID = id;
 			this.Length = length;
@@ -1242,7 +1237,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The container ID.
 		/// </value>
-		/*public int*/ ID = 0;
+		ID = 0;
 
 		/// <summary>
 		/// Gets or sets the container length.
@@ -1250,7 +1245,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The container length.
 		/// </value>
-		/*public decimal*/ Length = 0;
+		Length = 0;
 
 		/// <summary>
 		/// Gets or sets the container width.
@@ -1258,7 +1253,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The container width.
 		/// </value>
-		/*public decimal*/ Width = 0;
+		Width = 0;
 
 		/// <summary>
 		/// Gets or sets the container height.
@@ -1266,7 +1261,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The container height.
 		/// </value>
-		/*public decimal*/ Height = 0;
+		Height = 0;
 
 		/// <summary>
 		/// Gets or sets the volume of the container.
@@ -1274,6 +1269,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The volume of the container.
 		/// </value>
+		Volume = 0;
 	}
 
     class ContainerPackingResult
@@ -1289,15 +1285,13 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The container ID.
 		/// </value>
-		/*public int*/ ContainerID = 0;
+		ContainerID = 0;
 
-		/*public List<AlgorithmPackingResult>*/ AlgorithmPackingResults = null;
+		AlgorithmPackingResults = null;
 	}
 
     class Item
 	{
-		/*private decimal*/ Volume = 0;
-
 		/// <summary>
 		/// Initializes a new instance of the Item class.
 		/// </summary>
@@ -1306,7 +1300,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <param name="dim2">The length of another of the three item dimensions.</param>
 		/// <param name="dim3">The length of the other of the three item dimensions.</param>
 		/// <param name="itemQuantity">The item quantity.</param>
-		constructor(/*int*/ id, /*decimal*/ dim1, /*decimal*/ dim2, /*decimal*/ dim3, /*int*/ quantity)
+		constructor(id, dim1, dim2, dim3, quantity)
 		{
 			this.ID = id;
 			this.Dim1 = dim1;
@@ -1322,7 +1316,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The item ID.
 		/// </value>
-		/*public int*/ ID = 0;
+		ID = 0;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this item has already been packed.
@@ -1330,7 +1324,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		///   True if the item has already been packed; otherwise, false.
 		/// </value>
-		/*public bool*/ IsPacked = false;
+		IsPacked = false;
 
 		/// <summary>
 		/// Gets or sets the length of one of the item dimensions.
@@ -1338,7 +1332,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The first item dimension.
 		/// </value>
-		/*public decimal*/ Dim1 = 0;
+		Dim1 = 0;
 
 		/// <summary>
 		/// Gets or sets the length another of the item dimensions.
@@ -1346,7 +1340,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The second item dimension.
 		/// </value>
-		/*public decimal*/ Dim2 = 0;
+		Dim2 = 0;
 
 		/// <summary>
 		/// Gets or sets the third of the item dimensions.
@@ -1354,7 +1348,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The third item dimension.
 		/// </value>
-		/*public decimal*/ Dim3 = 0;
+		Dim3 = 0;
 
 		/// <summary>
 		/// Gets or sets the x coordinate of the location of the packed item within the container.
@@ -1362,7 +1356,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The x coordinate of the location of the packed item within the container.
 		/// </value>
-		/*public decimal*/ CoordX = 0;
+		CoordX = 0;
 
 		/// <summary>
 		/// Gets or sets the y coordinate of the location of the packed item within the container.
@@ -1370,7 +1364,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The y coordinate of the location of the packed item within the container.
 		/// </value>
-		/*public decimal*/ CoordY = 0;
+		CoordY = 0;
 
 		/// <summary>
 		/// Gets or sets the z coordinate of the location of the packed item within the container.
@@ -1378,7 +1372,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The z coordinate of the location of the packed item within the container.
 		/// </value>
-		/*public decimal*/ CoordZ = 0;
+		CoordZ = 0;
 
 		/// <summary>
 		/// Gets or sets the item quantity.
@@ -1386,7 +1380,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The item quantity.
 		/// </value>
-		/*public int*/ Quantity = 1;
+		Quantity = 1;
 
 		/// <summary>
 		/// Gets or sets the x dimension of the orientation of the item as it has been packed.
@@ -1394,7 +1388,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The x dimension of the orientation of the item as it has been packed.
 		/// </value>
-		/*public decimal*/ PackDimX = 0;
+		PackDimX = 0;
 
 		/// <summary>
 		/// Gets or sets the y dimension of the orientation of the item as it has been packed.
@@ -1402,7 +1396,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The y dimension of the orientation of the item as it has been packed.
 		/// </value>
-		/*public decimal*/ PackDimY = 0;
+		PackDimY = 0;
 
 		/// <summary>
 		/// Gets or sets the z dimension of the orientation of the item as it has been packed.
@@ -1410,7 +1404,7 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The z dimension of the orientation of the item as it has been packed.
 		/// </value>
-		/*public decimal*/ PackDimZ = 0;
+		PackDimZ = 0;
 
 		/// <summary>
 		/// Gets the item volume.
@@ -1418,34 +1412,33 @@ function/*public static List<ContainerPackingResult>*/ Pack(/*List<Container>*/ 
 		/// <value>
 		/// The item volume.
 		/// </value>
+		Volume = 0;
 	}
 
-	//    Object sync = new Object { };
-    let /*List<ContainerPackingResult>*/ result = []; /*new List<ContainerPackingResult>();*/
+    let result = [];
 
     containers.forEach(container =>
     {
-        let /*ContainerPackingResult*/ containerPackingResult = new ContainerPackingResult();
+        let containerPackingResult = new ContainerPackingResult();
         containerPackingResult.ContainerID = container.ID;
 
-        let /*List<Item>*/ items = []; /*new List<Item>();*/
+        let items = [];
 
         packingList.forEach(item =>
         {
             items.push(new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity));
         });
 
-        let /*Stopwatch*/ stopwatch = performance.now();
-        //stopwatch.Start();
-        let /*AlgorithmPackingResult*/ algorithmResult = Run(container, items);
+        let stopwatch = performance.now();
+        let algorithmResult = Run(container, items);
         stopwatch = performance.now() - stopwatch;
 
         algorithmResult.PackTimeInMilliseconds = stopwatch;
 
-        let /*decimal*/ containerVolume = container.Length * container.Width * container.Height;
-        let /*decimal*/ itemVolumePacked = 0;
+        let containerVolume = container.Length * container.Width * container.Height;
+        let itemVolumePacked = 0;
         algorithmResult.PackedItems.forEach(i => itemVolumePacked += i.Volume);
-        let /*decimal*/ itemVolumeUnpacked = 0;
+        let itemVolumeUnpacked = 0;
         algorithmResult.UnpackedItems.forEach(i => itemVolumeUnpacked += i.Volume);
 
         algorithmResult.PercentContainerVolumePacked = Math.round(itemVolumePacked / containerVolume * 100, 2);
