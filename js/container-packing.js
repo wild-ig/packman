@@ -32,7 +32,7 @@ function InitializeDrawing() {
 	renderer = new THREE.WebGLRenderer( { antialias: true } ); // WebGLRenderer CanvasRenderer
 	renderer.setClearColor( 0xf0f0f0 );
 	renderer.setPixelRatio( window.devicePixelRatio );
-	renderer.setSize( window.innerWidth / 2, window.innerHeight / 2);
+	renderer.setSize( window.innerWidth / 1.5, window.innerHeight / 1.5);
 	container.append( renderer.domElement );
 
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -44,7 +44,7 @@ function InitializeDrawing() {
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth / 2, window.innerHeight / 2 );
+	renderer.setSize( window.innerWidth / 1.5, window.innerHeight / 1.5 );
 }
 //
 function animate() {
@@ -80,18 +80,18 @@ var ViewModel = function () {
 
 	self.GenerateItemsToPack = function () {
 		self.ItemsToPack([]);
-		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1000, Name: 'Item1', Length: 5, Width: 4, Height: 2, Quantity: 1 }));
-		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1001, Name: 'Item2', Length: 2, Width: 1, Height: 1, Quantity: 3 }));
-		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1002, Name: 'Item3', Length: 9, Width: 7, Height: 3, Quantity: 4 }));
-		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1003, Name: 'Item4', Length: 13, Width: 6, Height: 3, Quantity: 8 }));
-		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 1 }));
-		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1005, Name: 'Item6', Length: 3, Width: 3, Height: 2, Quantity: 2 }));
+		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1000, Name: 'Item1', Type: 'Cylinder', Length: 5, Width: 5, Height: 3, Quantity: 3 }));
+		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1001, Name: 'Item2', Type: 'Cylinder', Length: 2, Width: 2, Height: 5, Quantity: 3 }));
+		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1002, Name: 'Item3', Type: 'Cylinder', Length: 7, Width: 7, Height: 3, Quantity: 4 }));
+		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1003, Name: 'Item4', Type: 'Torus', Length: 10, Width: 10, Height: 2, Quantity: 8 }));
+		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1004, Name: 'Item5', Type: 'Box', Length: 17, Width: 8, Height: 6, Quantity: 1 }));
+		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1005, Name: 'Item6', Type: 'Box', Length: 3, Width: 3, Height: 2, Quantity: 2 }));
 	};
 	
 	self.GenerateContainers = function () {
 		self.Containers([]);
 		self.Containers.push(ko.mapping.fromJS({ ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9, AlgorithmPackingResults: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1001, Name: 'Box2', Length: 23, Width: 9, Height: 4, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1001, Name: 'Box2', Length: 23, Width: 20, Height: 9, AlgorithmPackingResults: [] }));
 		// self.Containers.push(ko.mapping.fromJS({ ID: 1002, Name: 'Box3', Length: 16, Width: 16, Height: 6, AlgorithmPackingResults: [] }));
 		// self.Containers.push(ko.mapping.fromJS({ ID: 1003, Name: 'Box4', Length: 10, Width: 8, Height: 5, AlgorithmPackingResults: [] }));
 		// self.Containers.push(ko.mapping.fromJS({ ID: 1004, Name: 'Box5', Length: 40, Width: 28, Height: 20, AlgorithmPackingResults: [] }));
@@ -119,6 +119,7 @@ var ViewModel = function () {
 		self.NewItemToPack.ID(self.ItemCounter++);
 		self.ItemsToPack.push(ko.mapping.fromJS(ko.mapping.toJS(self.NewItemToPack)));
 		self.NewItemToPack.Name('');
+		self.NewItemToPack.Type('Box');
 		self.NewItemToPack.Length('');
 		self.NewItemToPack.Width('');
 		self.NewItemToPack.Height('');
@@ -154,6 +155,7 @@ var ViewModel = function () {
 		self.ItemsToPack().forEach(item => {
 			var itemToPack = {
 				ID: item.ID(),
+				Type: item.Type(),
 				Dim1: item.Length(),
 				Dim2: item.Width(),
 				Dim3: item.Height(),
@@ -193,7 +195,9 @@ var ViewModel = function () {
 		scene.remove( selectedObject );
 		
 		for (var i = 0; i < 1000; i++) {
-			var selectedObject = scene.getObjectByName('cube' + i);
+			let selectedObject = scene.getObjectByName('cube' + i) || 
+									scene.getObjectByName('cyl' + i) || 
+									scene.getObjectByName('torus' + i);
 			scene.remove(selectedObject);
 		}
 		
@@ -234,24 +238,96 @@ var ViewModel = function () {
 	self.PackItemInRender = function () {
 		var itemIndex = self.LastItemRenderedIndex() + 1;
 
-		var itemOriginOffset = {
+		console.log("ItemsToRender Object " + self.ItemsToRender()[itemIndex])
+		var itemOriginOffset;
+
+		var itemGeometry, CitemGeometry;
+		itemOriginOffset = {
 			x: self.ItemsToRender()[itemIndex].PackDimX / 2,
 			y: self.ItemsToRender()[itemIndex].PackDimY / 2,
 			z: self.ItemsToRender()[itemIndex].PackDimZ / 2
 		};
 
-		var itemGeometry = new THREE.BoxGeometry(self.ItemsToRender()[itemIndex].PackDimX, self.ItemsToRender()[itemIndex].PackDimY, self.ItemsToRender()[itemIndex].PackDimZ);
-		var cube = new THREE.Mesh(itemGeometry, itemMaterial);
-		cube.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
-		cube.name = 'cube' + itemIndex;
-		scene.add( cube );
-
+		if(self.ItemsToRender()[itemIndex].Type == 'Box') {
+			itemGeometry = new THREE.BoxGeometry(self.ItemsToRender()[itemIndex].PackDimX, self.ItemsToRender()[itemIndex].PackDimY, self.ItemsToRender()[itemIndex].PackDimZ);
+		}
+		//else
+		//{
+		if(self.ItemsToRender()[itemIndex].Type == 'Cylinder') {
+			CitemGeometry = new THREE.CylinderBufferGeometry(self.ItemsToRender()[itemIndex].Dim1/2, self.ItemsToRender()[itemIndex].Dim2/2, self.ItemsToRender()[itemIndex].Dim3, 12, 12);
+	
+			switch (self.ItemsToRender()[itemIndex].Orientation)
+			{
+				case 'XYZ': // For cylinder y,z swapped - correct
+					CitemGeometry.rotateX(Math.PI/2.0);
+					break;
+				case 'XZY': // For cylinder y,z swapped - correct
+					break;					
+				case 'YXZ': // For cylinder y,z swapped
+					CitemGeometry.rotateX(Math.PI/2.0).rotateZ(Math.PI/2.0);
+					break;					
+				case 'ZYX':
+					CitemGeometry.rotateY(Math.PI/2.0);
+					break;					
+				case 'ZXY': // XZY + rotate Z - correct
+					CitemGeometry.rotateZ(Math.PI/2.0);
+					break;					
+				case 'YZX': // rx = XZY => ry = YZX
+					CitemGeometry.rotateX(Math.PI/2.0).rotateY(Math.PI/2.0);
+					break;					
+				}
+			var cyl = new THREE.Mesh(CitemGeometry, itemMaterial);
+			cyl.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
+			cyl.name = 'cyl' + itemIndex;
+			scene.add( cyl );
+		}
+		else if(self.ItemsToRender()[itemIndex].Type == 'Torus') {
+			CitemGeometry = new THREE.TorusBufferGeometry(self.ItemsToRender()[itemIndex].Dim1/2 - self.ItemsToRender()[itemIndex].Dim3/2, self.ItemsToRender()[itemIndex].Dim3/2, 12, 12);
+	
+			switch (self.ItemsToRender()[itemIndex].Orientation)
+			{
+				case 'XYZ':
+					break;
+				case 'XZY':
+					CitemGeometry.rotateX(Math.PI/2.0);
+					break;					
+				case 'YXZ':
+					CitemGeometry.rotateZ(Math.PI/2.0);
+					break;					
+				case 'ZYX':
+					CitemGeometry.rotateY(Math.PI/2.0);
+					break;					
+				case 'ZXY':
+					CitemGeometry.rotateY(Math.PI/2.0).rotateZ(Math.PI/2.0);
+					break;					
+				case 'YZX':
+					CitemGeometry.rotateX(Math.PI/2.0).rotateY(Math.PI/2.0);
+					break;					
+				}
+			var torus = new THREE.Mesh(CitemGeometry, itemMaterial);
+			torus.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
+			torus.name = 'torus' + itemIndex;
+			scene.add( torus );
+		}
+		else {
+			var cube = new THREE.Mesh(itemGeometry, itemMaterial);
+			cube.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
+			cube.name = 'cube' + itemIndex;
+			scene.add( cube );
+		}
 		self.LastItemRenderedIndex(itemIndex);
 	};
 
 	self.UnpackItemInRender = function () {
+		var CselectedObject = scene.getObjectByName('cyl' + self.LastItemRenderedIndex());
+		if (CselectedObject) scene.remove( CselectedObject );
+
+		var CselectedObject = scene.getObjectByName('torus' + self.LastItemRenderedIndex());
+		if (CselectedObject) scene.remove( CselectedObject );
+
 		var selectedObject = scene.getObjectByName('cube' + self.LastItemRenderedIndex());
-		scene.remove( selectedObject );
+		if(selectedObject) scene.remove( selectedObject );
+
 		self.LastItemRenderedIndex(self.LastItemRenderedIndex() - 1);
 	};
 }
@@ -259,6 +335,7 @@ var ViewModel = function () {
 var ItemToPack = function () {
 	this.ID = '';
 	this.Name = '';
+	this.Type = '';
 	this.Length = '';
 	this.Width = '';
 	this.Height = '',

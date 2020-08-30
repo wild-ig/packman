@@ -105,8 +105,9 @@
                                 <tr>
                                     <th class="button-column"></th>
                                     <th class="text-column">Name</th>
-                                    <th class="data-column text-center">L</th>
-                                    <th class="data-column text-center">W</th>
+                                    <th class="text-column">Type</th>
+                                    <th class="data-column text-center">L/R</th>
+                                    <th class="data-column text-center">W/R</th>
                                     <th class="data-column text-center">H</th>
                                     <th class="data-column text-center">Qty</th>
                                     <th></th>
@@ -116,6 +117,13 @@
                                 <tr>
                                     <td class="button-column"><button class="btn btn-danger btn-sm" data-bind="click: $root.RemoveItemToPack">&nbsp;<span class="glyphicon glyphicon-remove"></span>&nbsp;</button></td>
                                     <td class="text-column"><input type="text" class="form-control input-sm" data-bind="value: Name" /></td>
+                                    <td class="text-column">
+                                        <select class="form-control input-sm" data-bind="value: Type">
+                                            <option value="Box">Box</option>
+                                            <option value="Cylinder">Cylinder</option>
+                                            <option value="Torus">Torus</option>
+                                        </select>
+                                    </td>
                                     <td class="data-column text-center"><input type="text" class="form-control input-sm text-center" data-bind="value: Length" /></td>
                                     <td class="data-column text-center"><input type="text" class="form-control input-sm text-center" data-bind="value: Width" /></td>
                                     <td class="data-column text-center"><input type="text" class="form-control input-sm text-center" data-bind="value: Height" /></td>
@@ -130,6 +138,13 @@
                             <tr>
                                 <td class="button-column"><button class="btn btn-success btn-sm" data-bind="click: AddNewItemToPack">&nbsp;<span class="glyphicon glyphicon-plus"></span>&nbsp;</button></td>
                                 <td class="text-column"><input type="text" class="form-control input-sm" data-bind="value: NewItemToPack.Name" /></td>
+                                <td class="text-column">
+                                    <select class="form-control input-sm" data-bind="value: NewItemToPack.Type">
+                                        <option value="Box">Box</option>
+                                        <option value="Cylinder">Cylinder</option>
+                                        <option value="Torus">Torus</option>
+                                    </select>
+                                </td>
                                 <td class="data-column text-center"><input type="text" class="form-control input-sm text-center" data-bind="value: NewItemToPack.Length" /></td>
                                 <td class="data-column text-center"><input type="text" class="form-control input-sm text-center" data-bind="value: NewItemToPack.Width" /></td>
                                 <td class="data-column text-center"><input type="text" class="form-control input-sm text-center" data-bind="value: NewItemToPack.Height" /></td>

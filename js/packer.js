@@ -125,15 +125,18 @@ function Pack(containers, packingList, algorithmTypeIDs)
 	let bboxx = 0;
 	let bboxy = 0;
 	let bboxz = 0;
+	let oorient = 'XYZ';
 	let bfx = 0;
 	let bfy = 0;
 	let bfz = 0;
 	let boxx = 0;
 	let boxy = 0;
 	let boxz = 0;
+	let orient = 'XYZ';
 	let cboxx = 0;
 	let cboxy = 0;
 	let cboxz = 0;
+	let corient = 'XYZ';
 	let layerinlayer = 0;
 	let layerThickness = 0;
 	let lilz = 0;
@@ -154,7 +157,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 	/// <summary>
 	/// Analyzes each unpacked box to find the best fitting one to the empty space given.
 	/// </summary>
-	function AnalyzeBox(hmx, hy, hmy, hz, hmz, dim1, dim2, dim3)
+	function AnalyzeBox(hmx, hy, hmy, hz, hmz, dim1, dim2, dim3, dir)
 	{
 		if (dim1 <= hmx && dim2 <= hmy && dim3 <= hmz)
 		{
@@ -165,6 +168,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 					boxx = dim1;
 					boxy = dim2;
 					boxz = dim3;
+					orient = dir;
 					bfx = hmx - dim1;
 					bfy = hy - dim2;
 					bfz = Math.abs(hz - dim3);
@@ -175,6 +179,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 					boxx = dim1;
 					boxy = dim2;
 					boxz = dim3;
+					orient = dir;
 					bfx = hmx - dim1;
 					bfy = hy - dim2;
 					bfz = Math.abs(hz - dim3);
@@ -185,6 +190,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 					boxx = dim1;
 					boxy = dim2;
 					boxz = dim3;
+					orient = dir;
 					bfx = hmx - dim1;
 					bfy = hy - dim2;
 					bfz = Math.abs(hz - dim3);
@@ -198,6 +204,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 					bboxx = dim1;
 					bboxy = dim2;
 					bboxz = dim3;
+					oorient = dir;
 					bbfx = hmx - dim1;
 					bbfy = dim2 - hy;
 					bbfz = Math.abs(hz - dim3);
@@ -208,6 +215,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 					bboxx = dim1;
 					bboxy = dim2;
 					bboxz = dim3;
+					oorient = dir;
 					bbfx = hmx - dim1;
 					bbfy = dim2 - hy;
 					bbfz = Math.abs(hz - dim3);
@@ -218,6 +226,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 					bboxx = dim1;
 					bboxy = dim2;
 					bboxz = dim3;
+					oorient = dir;
 					bbfx = hmx - dim1;
 					bbfy = dim2 - hy;
 					bbfz = Math.abs(hz - dim3);
@@ -240,6 +249,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 			cboxx = boxx;
 			cboxy = boxy;
 			cboxz = boxz;
+			corient = orient;
 		}
 		else
 		{
@@ -255,6 +265,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 				cboxx = bboxx;
 				cboxy = bboxy;
 				cboxz = bboxz;
+				corient = oorient;
 				layerinlayer = layerinlayer + bboxy - layerThickness;
 				layerThickness = bboxy;
 			}
@@ -322,7 +333,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 		let layersIndex = 0;
 		let bestVolume = 0.0;
 
-		for (let containerOrientationVariant = 1; (containerOrientationVariant <= 6) && !quit; containerOrientationVariant++)
+		for (let containerOrientationVariant = 1; (containerOrientationVariant <= 1) && !quit; containerOrientationVariant++)
 		{
 			switch (containerOrientationVariant)
 			{
@@ -446,15 +457,15 @@ function Pack(containers, packingList, algorithmTypeIDs)
 
 			if (x > itemsToPackCount) return;
 
-			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim2, itemsToPack[x].Dim3);
+			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim2, itemsToPack[x].Dim3, 'XYZ');
 
 			if ((itemsToPack[x].Dim1 == itemsToPack[x].Dim3) && (itemsToPack[x].Dim3 == itemsToPack[x].Dim2)) continue;
 
-			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim3, itemsToPack[x].Dim2);
-			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim1, itemsToPack[x].Dim3);
-			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim3, itemsToPack[x].Dim1);
-			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim1, itemsToPack[x].Dim2);
-			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim2, itemsToPack[x].Dim1);
+			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim1, itemsToPack[x].Dim3, itemsToPack[x].Dim2, 'XZY');
+			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim1, itemsToPack[x].Dim3, 'YXZ');
+			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim2, itemsToPack[x].Dim3, itemsToPack[x].Dim1, 'YZX');
+			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim1, itemsToPack[x].Dim2, 'ZXY');
+			AnalyzeBox(hmx, hy, hmy, hz, hmz, itemsToPack[x].Dim3, itemsToPack[x].Dim2, itemsToPack[x].Dim1, 'ZYX');
 		}
 	}
 
@@ -566,7 +577,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 
 		// The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
 		// of the list to make that possible.
-		itemsToPack.push(new Item(0, 0, 0, 0, 0));
+		itemsToPack.push(new Item(0, '', 0, 0, 0, 0));
 
 		layers = [];
 		itemsToPackCount = 0;
@@ -576,14 +587,14 @@ function Pack(containers, packingList, algorithmTypeIDs)
 			let item = items[j];
 			for (let i = 1; i <= item.Quantity; i++)
 			{
-				let newItem = new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
+				let newItem = new Item(item.ID, item.Type, item.Dim1, item.Dim2, item.Dim3, item.Quantity);
 				itemsToPack.push(newItem);
 			}
 
 			itemsToPackCount += item.Quantity;
 		}
 
-		itemsToPack.push(new Item(0, 0, 0, 0, 0));
+		itemsToPack.push(new Item(0, '', 0, 0, 0, 0));
 
 		totalContainerVolume = container.Length * container.Height * container.Width;
 		totalItemVolume = 0.0;
@@ -710,6 +721,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 				packDimX = itemsToPack[cboxi].PackDimX;
 				packDimY = itemsToPack[cboxi].PackDimY;
 				packDimZ = itemsToPack[cboxi].PackDimZ;
+				//itemsToPack[cboxi].Orientation = 'XYZ';
 				break;
 
 			case 2:
@@ -719,6 +731,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 				packDimX = itemsToPack[cboxi].PackDimZ;
 				packDimY = itemsToPack[cboxi].PackDimY;
 				packDimZ = itemsToPack[cboxi].PackDimX;
+				//itemsToPack[cboxi].Orientation = 'ZYX';
 				break;
 
 			case 3:
@@ -728,6 +741,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 				packDimX = itemsToPack[cboxi].PackDimY;
 				packDimY = itemsToPack[cboxi].PackDimZ;
 				packDimZ = itemsToPack[cboxi].PackDimX;
+				//itemsToPack[cboxi].Orientation = 'YZX';
 				break;
 
 			case 4:
@@ -737,6 +751,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 				packDimX = itemsToPack[cboxi].PackDimY;
 				packDimY = itemsToPack[cboxi].PackDimX;
 				packDimZ = itemsToPack[cboxi].PackDimZ;
+				//itemsToPack[cboxi].Orientation = 'YXZ';
 				break;
 
 			case 5:
@@ -746,6 +761,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 				packDimX = itemsToPack[cboxi].PackDimX;
 				packDimY = itemsToPack[cboxi].PackDimZ;
 				packDimZ = itemsToPack[cboxi].PackDimY;
+				//itemsToPack[cboxi].Orientation = 'XZY';
 				break;
 
 			case 6:
@@ -755,6 +771,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 				packDimX = itemsToPack[cboxi].PackDimZ;
 				packDimY = itemsToPack[cboxi].PackDimX;
 				packDimZ = itemsToPack[cboxi].PackDimY;
+				//itemsToPack[cboxi].Orientation = 'ZXY';
 				break;
 		}
 
@@ -1162,6 +1179,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 		itemsToPack[cboxi].PackDimX = cboxx;
 		itemsToPack[cboxi].PackDimY = cboxy;
 		itemsToPack[cboxi].PackDimZ = cboxz;
+		itemsToPack[cboxi].Orientation = corient;
 		packedVolume = packedVolume + itemsToPack[cboxi].Volume;
 		packedItemCount++;
 
@@ -1300,9 +1318,10 @@ function Pack(containers, packingList, algorithmTypeIDs)
 		/// <param name="dim2">The length of another of the three item dimensions.</param>
 		/// <param name="dim3">The length of the other of the three item dimensions.</param>
 		/// <param name="itemQuantity">The item quantity.</param>
-		constructor(id, dim1, dim2, dim3, quantity)
+		constructor(id, type, dim1, dim2, dim3, quantity)
 		{
 			this.ID = id;
+			this.Type = type;
 			this.Dim1 = dim1;
 			this.Dim2 = dim2;
 			this.Dim3 = dim3;
@@ -1325,6 +1344,14 @@ function Pack(containers, packingList, algorithmTypeIDs)
 		///   True if the item has already been packed; otherwise, false.
 		/// </value>
 		IsPacked = false;
+
+		/// <summary>
+		/// Gets or sets the type of item.
+		/// </summary>
+		/// <value>
+		/// Type.
+		/// </value>
+		Type = '';
 
 		/// <summary>
 		/// Gets or sets the length of one of the item dimensions.
@@ -1383,6 +1410,14 @@ function Pack(containers, packingList, algorithmTypeIDs)
 		Quantity = 1;
 
 		/// <summary>
+		/// Gets or sets the packed orientation of item.
+		/// </summary>
+		/// <value>
+		/// one of XYZ, XZY, YXZ, ZXY, XZY, ZYX.
+		/// </value>
+		Orientation = 'XYZ';
+
+		/// <summary>
 		/// Gets or sets the x dimension of the orientation of the item as it has been packed.
 		/// </summary>
 		/// <value>
@@ -1426,7 +1461,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 
         packingList.forEach(item =>
         {
-            items.push(new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity));
+            items.push(new Item(item.ID, item.Type, item.Dim1, item.Dim2, item.Dim3, item.Quantity));
         });
 
         let stopwatch = performance.now();
