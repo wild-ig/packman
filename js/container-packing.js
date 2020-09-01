@@ -80,12 +80,12 @@ var ViewModel = function () {
 
 	self.GenerateItemsToPack = function () {
 		self.ItemsToPack([]);
-		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1000, Name: 'Item1', Type: 'Cylinder', Length: 5, Width: 5, Height: 3, Quantity: 3 }));
+		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1000, Name: 'Item1', Type: 'Box', Length: 5, Width: 5, Height: 3, Quantity: 3 }));
 		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1001, Name: 'Item2', Type: 'Cylinder', Length: 2, Width: 2, Height: 5, Quantity: 3 }));
 		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1002, Name: 'Item3', Type: 'Cylinder', Length: 7, Width: 7, Height: 3, Quantity: 4 }));
 		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1003, Name: 'Item4', Type: 'Torus', Length: 10, Width: 10, Height: 2, Quantity: 8 }));
-		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1004, Name: 'Item5', Type: 'Box', Length: 17, Width: 8, Height: 6, Quantity: 1 }));
-		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1005, Name: 'Item6', Type: 'Box', Length: 3, Width: 3, Height: 2, Quantity: 2 }));
+		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1004, Name: 'Item5', Type: 'Cone', Length: 8, Width: 8, Height: 6, Quantity: 1 }));
+		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1005, Name: 'Item6', Type: 'Sphere', Length: 3, Width: 3, Height: 3, Quantity: 2 }));
 	};
 	
 	self.GenerateContainers = function () {
@@ -248,73 +248,114 @@ var ViewModel = function () {
 			z: self.ItemsToRender()[itemIndex].PackDimZ / 2
 		};
 
-		if(self.ItemsToRender()[itemIndex].Type == 'Box') {
+		switch(self.ItemsToRender()[itemIndex].Type)
+		{
+		case 'Box':
 			itemGeometry = new THREE.BoxGeometry(self.ItemsToRender()[itemIndex].PackDimX, self.ItemsToRender()[itemIndex].PackDimY, self.ItemsToRender()[itemIndex].PackDimZ);
-		}
-		//else
-		//{
-		if(self.ItemsToRender()[itemIndex].Type == 'Cylinder') {
-			CitemGeometry = new THREE.CylinderBufferGeometry(self.ItemsToRender()[itemIndex].Dim1/2, self.ItemsToRender()[itemIndex].Dim2/2, self.ItemsToRender()[itemIndex].Dim3, 12, 12);
-	
-			switch (self.ItemsToRender()[itemIndex].Orientation)
-			{
-				case 'XYZ': // For cylinder y,z swapped - correct
-					CitemGeometry.rotateX(Math.PI/2.0);
-					break;
-				case 'XZY': // For cylinder y,z swapped - correct
-					break;					
-				case 'YXZ': // For cylinder y,z swapped
-					CitemGeometry.rotateX(Math.PI/2.0).rotateZ(Math.PI/2.0);
-					break;					
-				case 'ZYX':
-					CitemGeometry.rotateY(Math.PI/2.0);
-					break;					
-				case 'ZXY': // XZY + rotate Z - correct
-					CitemGeometry.rotateZ(Math.PI/2.0);
-					break;					
-				case 'YZX': // rx = XZY => ry = YZX
-					CitemGeometry.rotateX(Math.PI/2.0).rotateY(Math.PI/2.0);
-					break;					
-				}
-			var cyl = new THREE.Mesh(CitemGeometry, itemMaterial);
-			cyl.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
-			cyl.name = 'cyl' + itemIndex;
-			scene.add( cyl );
-		}
-		else if(self.ItemsToRender()[itemIndex].Type == 'Torus') {
-			CitemGeometry = new THREE.TorusBufferGeometry(self.ItemsToRender()[itemIndex].Dim1/2 - self.ItemsToRender()[itemIndex].Dim3/2, self.ItemsToRender()[itemIndex].Dim3/2, 12, 12);
-	
-			switch (self.ItemsToRender()[itemIndex].Orientation)
-			{
-				case 'XYZ':
-					break;
-				case 'XZY':
-					CitemGeometry.rotateX(Math.PI/2.0);
-					break;					
-				case 'YXZ':
-					CitemGeometry.rotateZ(Math.PI/2.0);
-					break;					
-				case 'ZYX':
-					CitemGeometry.rotateY(Math.PI/2.0);
-					break;					
-				case 'ZXY':
-					CitemGeometry.rotateY(Math.PI/2.0).rotateZ(Math.PI/2.0);
-					break;					
-				case 'YZX':
-					CitemGeometry.rotateX(Math.PI/2.0).rotateY(Math.PI/2.0);
-					break;					
-				}
-			var torus = new THREE.Mesh(CitemGeometry, itemMaterial);
-			torus.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
-			torus.name = 'torus' + itemIndex;
-			scene.add( torus );
-		}
-		else {
 			var cube = new THREE.Mesh(itemGeometry, itemMaterial);
 			cube.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
 			cube.name = 'cube' + itemIndex;
 			scene.add( cube );
+			break;
+		
+		case 'Sphere':
+			itemGeometry = new THREE.SphereBufferGeometry(self.ItemsToRender()[itemIndex].PackDimX/2, 32, 32);
+			var cube = new THREE.Mesh(itemGeometry, itemMaterial);
+			cube.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
+			cube.name = 'cube' + itemIndex;
+			scene.add( cube );
+			break;
+		case 'Cone':
+			CitemGeometry = new THREE.ConeBufferGeometry(self.ItemsToRender()[itemIndex].Dim1/2, self.ItemsToRender()[itemIndex].Dim3, 32, 32);
+			switch (self.ItemsToRender()[itemIndex].Orientation)
+			{
+			case 'XYZ': // For cylinder y,z swapped - correct
+				CitemGeometry.rotateX(Math.PI/2.0);
+				break;
+			case 'XZY': // For cylinder y,z swapped - correct
+				break;					
+			case 'YXZ': // For cylinder y,z swapped
+				CitemGeometry.rotateX(Math.PI/2.0).rotateZ(Math.PI/2.0);
+				break;					
+			case 'ZYX':
+				CitemGeometry.rotateY(Math.PI/2.0);
+				break;					
+			case 'ZXY': // XZY + rotate Z - correct
+				CitemGeometry.rotateZ(Math.PI/2.0);
+				break;					
+			case 'YZX': // rx = XZY => ry = YZX
+				CitemGeometry.rotateX(Math.PI/2.0).rotateY(Math.PI/2.0);
+				break;					
+			}
+			var cyl = new THREE.Mesh(CitemGeometry, itemMaterial);
+			cyl.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
+			cyl.name = 'cyl' + itemIndex;
+			scene.add( cyl );
+			break;
+		case 'Cylinder':
+			CitemGeometry = new THREE.CylinderBufferGeometry(self.ItemsToRender()[itemIndex].Dim1/2, self.ItemsToRender()[itemIndex].Dim2/2, self.ItemsToRender()[itemIndex].Dim3, 12, 12);
+							
+			switch (self.ItemsToRender()[itemIndex].Orientation)
+			{
+			case 'XYZ': // For cylinder y,z swapped - correct
+				CitemGeometry.rotateX(Math.PI/2.0);
+				break;
+			case 'XZY': // For cylinder y,z swapped - correct
+				break;					
+			case 'YXZ': // For cylinder y,z swapped
+				CitemGeometry.rotateX(Math.PI/2.0).rotateZ(Math.PI/2.0);
+				break;					
+			case 'ZYX':
+				CitemGeometry.rotateY(Math.PI/2.0);
+				break;					
+			case 'ZXY': // XZY + rotate Z - correct
+				CitemGeometry.rotateZ(Math.PI/2.0);
+				break;					
+			case 'YZX': // rx = XZY => ry = YZX
+				CitemGeometry.rotateX(Math.PI/2.0).rotateY(Math.PI/2.0);
+				break;					
+			}
+			var cyl = new THREE.Mesh(CitemGeometry, itemMaterial);
+			cyl.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
+			cyl.name = 'cyl' + itemIndex;
+			scene.add( cyl );
+			break;
+		case 'Torus':
+			CitemGeometry = new THREE.TorusBufferGeometry(self.ItemsToRender()[itemIndex].Dim1/2 - self.ItemsToRender()[itemIndex].Dim3/2, self.ItemsToRender()[itemIndex].Dim3/2, 12, 12);
+	
+			switch (self.ItemsToRender()[itemIndex].Orientation)
+			{
+			case 'XYZ':
+				break;
+			case 'XZY':
+				CitemGeometry.rotateX(Math.PI/2.0);
+				break;					
+			case 'YXZ':
+				CitemGeometry.rotateZ(Math.PI/2.0);
+				break;					
+			case 'ZYX':
+				CitemGeometry.rotateY(Math.PI/2.0);
+				break;					
+			case 'ZXY':
+				CitemGeometry.rotateY(Math.PI/2.0).rotateZ(Math.PI/2.0);
+				break;					
+			case 'YZX':
+				CitemGeometry.rotateX(Math.PI/2.0).rotateY(Math.PI/2.0);
+				break;					
+			}
+			var torus = new THREE.Mesh(CitemGeometry, itemMaterial);
+			torus.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
+			torus.name = 'torus' + itemIndex;
+			scene.add( torus );
+
+			itemGeometry = new THREE.BoxGeometry(self.ItemsToRender()[itemIndex].PackDimX, self.ItemsToRender()[itemIndex].PackDimY, self.ItemsToRender()[itemIndex].PackDimZ);
+			var cube = new THREE.Mesh(itemGeometry, itemMaterial);
+			cube.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
+			cube.name = 'cube' + itemIndex;
+			scene.add( cube );
+			break;
 		}
+
 		self.LastItemRenderedIndex(itemIndex);
 	};
 
