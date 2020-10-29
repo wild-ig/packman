@@ -591,7 +591,7 @@ function Pack(containers, packingList, algorithmTypeIDs)
 				itemsToPack.push(newItem);
 			}
 
-			itemsToPackCount += item.Quantity;
+			itemsToPackCount += parseInt(item.Quantity);
 		}
 
 		itemsToPack.push(new Item(0, '', 0, 0, 0, 0));
