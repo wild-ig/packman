@@ -1243,10 +1243,10 @@ function Pack(containers, packingList, algorithmTypeIDs)
 		constructor(id, length, width, height)
 		{
 			this.ID = id;
-			this.Length = length;
-			this.Width = width;
-			this.Height = height;
-			this.Volume = length * width * height;
+			this.Length = parseInt(length);
+			this.Width = parseInt(width);
+			this.Height = parseInt(height);
+			this.Volume = this.Length * this.Width * this.Height;
 		}
 
 		/// <summary>
@@ -1322,11 +1322,11 @@ function Pack(containers, packingList, algorithmTypeIDs)
 		{
 			this.ID = id;
 			this.Type = type;
-			this.Dim1 = dim1;
-			this.Dim2 = dim2;
-			this.Dim3 = dim3;
-			this.Volume = dim1 * dim2 * dim3;
-			this.Quantity = quantity;
+			this.Dim1 = parseInt(dim1);
+			this.Dim2 = parseInt(dim2);
+			this.Dim3 = parseInt(dim3);
+			this.Volume = this.Dim1 * this.Dim2 * this.Dim3;
+			this.Quantity = parseInt(quantity);
 		}
 
 		/// <summary>
