@@ -201,7 +201,7 @@ var ViewModel = function () {
 			scene.remove(selectedObject);
 		}
 		
-		camera.position.set(container.Length(), container.Length(), container.Length());
+		camera.position.set(container.Length(), container.Width(), container.Height());
 
 		self.ItemsToRender(algorithmPackingResult.PackedItems);
 		self.LastItemRenderedIndex(-1);
